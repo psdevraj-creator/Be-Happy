@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Happy — Swami Anubhavananda</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #FCF9F5; color: #1A1A2E;
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+}
+.pw-screen { text-align: center; padding: 48px 24px; max-width: 400px; width: 100%; }
+.photo { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 16px;
+  background: linear-gradient(135deg, #C76B1E22, transparent);
+  border: 3px solid #C76B1E; }
+h1 { font-size: 32px; font-weight: 600; color: #C76B1E; margin-bottom: 4px; }
+.sub { font-size: 14px; color: #4A4A5E; margin-bottom: 28px; }
+label { display: block; font-size: 13px; font-weight: 600; color: #4A4A5E; margin-bottom: 8px; text-align: left; }
+input { width: 100%; padding: 12px 14px; border: 1px solid #E8E0D8; border-radius: 8px;
+  font-family: inherit; font-size: 16px; background: #fff; color: #1A1A2E; outline: none; }
+input:focus { border-color: #C76B1E; box-shadow: 0 0 0 3px rgba(199,107,30,0.1); }
+button { width: 100%; padding: 12px; margin-top: 12px; border: none; border-radius: 8px;
+  background: #C76B1E; color: #fff; font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer; }
+button:hover { background: #B05E18; }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+.error { color: #D32F2F; font-size: 13px; margin-top: 12px; display: none; }
+.error.show { display: block; }
+.loading { display: none; margin-top: 16px; font-size: 13px; color: #8A8A9E; }
+.loading.show { display: block; }
+</style>
+</head>
+<body>
+<div class="pw-screen">
+  <div class="photo"></div>
+  <h1>Be Happy</h1>
+  <p class="sub">Discourses on Vedanta by Swami Anubhavananda</p>
+  <form id="f" autocomplete="off">
+    <label for="pw">Enter password to access the catalog</label>
+    <input type="password" id="pw" placeholder="Password" autofocus>
+    <button type="submit" id="btn">Access Catalog</button>
+    <div class="error" id="err">Incorrect password. Please try again.</div>
+    <div class="loading" id="load">Loading catalog…</div>
+  </form>
+</div>
+<script>
+const HASH = '9129cc5cd1248fa2675dd9c835446d8c728bdffa004a547b091e5a4e599e2cc9';
+if (sessionStorage.getItem('behappy_auth') === 'true') { window.location.replace('Be_Happy.html'); }
+async function sha(s) {
+  const b = new TextEncoder().encode(s);
+  const h = await crypto.subtle.digest('SHA-256', b);
+  return Array.from(new Uint8Array(h)).map(x => x.toString(16).padStart(2,'0')).join('');
+}
+document.getElementById('f').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const pw = document.getElementById('pw').value;
+  if (!pw) { document.getElementById('err').textContent='Please enter a password.'; document.getElementById('err').classList.add('show'); return; }
+  document.getElementById('btn').disabled = true;
+  document.getElementById('err').classList.remove('show');
+  if (await sha(pw) === HASH) {
+    document.getElementById('load').classList.add('show');
+    sessionStorage.setItem('behappy_auth', 'true');
+    window.location.replace('Be_Happy.html');
+  } else {
+    document.getElementById('err').classList.remove('show');
+    void document.getElementById('err').offsetWidth;
+    document.getElementById('err').classList.add('show');
+    document.getElementById('btn').disabled = false;
+  }
+});
+</script>
+</body>
+</html>
