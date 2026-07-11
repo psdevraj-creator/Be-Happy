@@ -101091,10 +101091,10 @@ function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").repl
 var navStack=[{type:"home",name:"Home"}],activeMode="playlist",searchQuery="";
 var MONTHS=["","January","February","March","April","May","June","July","August","September","October","November","December"];
 
-function getTitleBase(s){return String(s||"").replace(/\s+\d+\s+of\s+\d+/gi,"").replace(/\s+#\d+/gi,"").replace(/\s+Chapter\s+\d+/gi,"").replace(/\s+Part\s+\d+/gi,"").replace(/\s+Talk\s+\d+/gi,"").replace(/\s+\d+\s*[-–]\s*\d+/gi,"").replace(/^\d+\s*/g,"").trim().toLowerCase();}
+function getTitleBase(s){return String(s||"").replace(/\s+\d+\s+of\s+\d+/gi,"").replace(/\s+\d+\s*\/\s*\d+/gi,"").replace(/\s+#\d+/gi,"").replace(/\s+Chapter\s+\d+/gi,"").replace(/\s+Part\s+\d+/gi,"").replace(/\s+Talks?[\s-]*\d*/gi,"").replace(/\s+Session\s+\d+/gi,"").replace(/\s+Vol\.?\s*\d+/gi,"").replace(/\s+\d+\s*[-–]\s*\d+/gi,"").replace(/\s+\d+\s*&\s*\d+/gi,"").replace(/\s*\(\d+\)/gi,"").replace(/\s+\d+$/g,"").replace(/^\d+[\s.-]+/g,"").replace(/\s+[IVXLCDM]+$/i,"").replace(/\s*\|[^\|]*$/g,"").replace(/[\s\-\|]+/g," ").trim().toLowerCase();}
 var GROUP_COLORS=["#F5DEB3","#C8E6C8","#C8D8F0","#F0E6C8","#E0C8F0","#B8E8D8","#F0C8C8","#D0D0F0","#D8E8C8","#F0D0E0","#D0E0F0","#F0D8C8"];
 function getTalkGroupColors(talks){var g={};for(var i=0;i<talks.length;i++){var k=getTitleBase(talks[i].title);if(!g[k])g[k]=[];g[k].push(talks[i]);}
-var r={},ci=0;for(var k in g){if(g[k].length>=2){for(var j=0;j<g[k].length;j++)r[g[k][j].id]=GROUP_COLORS[ci%GROUP_COLORS.length];ci++;}}return r;}
+var r={},ci=0;for(var k in g){for(var j=0;j<g[k].length;j++)r[g[k][j].id]=GROUP_COLORS[ci%GROUP_COLORS.length];ci++;}return r;}
 
 function setCardMode(m){
 activeMode=m;navStack=[{type:"home",name:"Home"}];
@@ -101126,7 +101126,7 @@ var cg=document.getElementById("cardGrid");cg.className="card-grid";var h="";
 if(activeMode==="playlist"){
 for(var si=0;si<CATALOG_DATA.sections.length;si++){var sec=CATALOG_DATA.sections[si];var cnt=0;
 for(var ii=0;ii<sec.items.length;ii++){var it=sec.items[ii];if(it.type==="playlist")cnt+=it.talks.length;else if(it.type==="group")for(var pi=0;pi<it.playlists.length;pi++)cnt+=it.playlists[pi].talks.length;}
-h+='<div class="card section-card" onclick="navigateToSection(\''+sec.id+'\',\''+esc(sec.name)+'\')"><div class="card-title">'+esc(sec.name)+'</div><div class="card-count">'+cnt+' talks</div></div>';}}
+h+='<div class="card section-card" onclick="navigateToSection(\''+sec.id+'\',\''+esc(sec.name)+'\')" style="background-color:'+GROUP_COLORS[si%GROUP_COLORS.length]+'"><div class="card-title">'+esc(sec.name)+'</div><div class="card-count">'+cnt+' talks</div></div>';}}
 else if(activeMode==="alpha"){
 var all=getAllTalks();all.sort(function(a,b){var ta=(a.talk.title||"").toLowerCase(),tb=(b.talk.title||"").toLowerCase();return ta<tb?-1:ta>tb?1:0;});
 var talks=all.map(function(x){return x.talk;});var colors=getTalkGroupColors(talks);
