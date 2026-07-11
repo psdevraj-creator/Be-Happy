@@ -8,7 +8,7 @@ Self-contained PWA catalog of Vedanta talks from [@smilingswami](https://www.you
 
 | File | Purpose |
 |------|---------|
-| `BHTalks.html` | Self-contained catalog — open anywhere, works offline |
+| `index.html` | Self-contained catalog — open anywhere, works offline |
 | `manifest.json` | PWA manifest for Android "Add to Home Screen" |
 | `sw.js` | Service worker for offline cache |
 | `icons/` | App icons (192x192, 512x512) |
@@ -16,12 +16,11 @@ Self-contained PWA catalog of Vedanta talks from [@smilingswami](https://www.you
 ## How to Use
 
 ### Direct download
-Download `BHTalks.html` → open in any browser — sidebar works, search works, videos play embedded.
+Download `index.html` → open in any browser — sidebar works, search works, videos play embedded.
 
 ### Install as Android app
-1. Host this folder on any web server (GitHub Pages works)
-2. Visit the URL on Android Chrome
-3. Tap "Add to Home Screen"
+1. Visit this page on Android Chrome
+2. Tap "Add to Home Screen"
 
 The app launches fullscreen with no URL bar. Catalog data works offline (videos need internet).
 
@@ -31,13 +30,6 @@ The app launches fullscreen with no URL bar. Catalog data works offline (videos 
 - **Resizable sidebar** — drag to expand
 - **YouTube embed** — videos play inline or open in YouTube app
 - **Channel badges** — shows @smilingswami / @satsa8242 per talk
-
-## Build from source
-
-```bash
-python catalog.py                 # Build catalog from YouTube (optional)
-python build_android.py           # Regenerate BHTalks.html + PWA files
-```
 
 ## Sections
 - Upanishads
