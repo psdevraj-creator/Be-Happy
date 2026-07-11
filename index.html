@@ -101130,7 +101130,7 @@ else if(top.type==="dateMonth")renderDateTalkCards(top.year,top.month);}
 
 function renderBreadcrumb(){
 var h="";var nc=navStack.length;
-for(var i=0;i<nc;i++){var n=navStack[i];if(i>0)h+='<span class="sep"> \\u203A </span>';
+for(var i=0;i<nc;i++){var n=navStack[i];if(i>0)h+='<span class="sep"> \u203A </span>';
 if(i===nc-1)h+=esc(n.name);else h+='<a onclick="navigateTo('+i+')">'+esc(n.name)+'</a>';}
 document.getElementById("breadcrumb").innerHTML=h;}
 
@@ -101218,11 +101218,11 @@ showTalk(id,true);}
 function showTalk(id,fromNav){
 var t=talkMap[id];if(!t)return;
 var th=document.getElementById("talkHeader");
-var star=isFavourite(id)?'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\\u2605</button>':'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\\u2606</button>';
+var star=isFavourite(id)?'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\u2605</button>':'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\u2606</button>';
 var badge='<span style="font-size:11px;background:var(--border-light);padding:2px 8px;border-radius:4px;">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span>';
 var thumb='<div class="video-thumb" onclick="window.open(\'https://www.youtube.com/watch?v='+t.videoId+'\')"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" onerror="this.style.display=\'none\'"><span class="play-icon"></span></div>';
-var ytLink='<a class="watch-btn" href="intent://www.youtube.com/watch?v='+t.videoId+'#Intent;scheme=https;package=com.google.android.youtube;end" target="_blank" rel="noopener">\\u25B6 Watch on YouTube</a>';
-th.innerHTML='<a class="talk-back" onclick="goBackFromTalk()">\\u2190 Back to talks</a><h1>'+esc(t.title)+' '+star+'</h1>'+badge+thumb+'<div class="talk-actions">'+ytLink+'</div>';
+var ytLink='<a class="watch-btn" href="intent://www.youtube.com/watch?v='+t.videoId+'#Intent;scheme=https;package=com.google.android.youtube;end" target="_blank" rel="noopener">\u25B6 Watch on YouTube</a>';
+th.innerHTML='<a class="talk-back" onclick="goBackFromTalk()">\u2190 Back to talks</a><h1>'+esc(t.title)+' '+star+'</h1>'+badge+thumb+'<div class="talk-actions">'+ytLink+'</div>';
 location.hash=id;}
 
 function goBackFromTalk(){navStack.pop();document.getElementById("talkView").classList.remove("active");renderView();}
@@ -101245,7 +101245,7 @@ function addRecent(id,title){var r=loadRecent();var i=r.findIndex(function(x){re
 function updateSidePanel(){renderFavs();renderRecent();}
 function renderFavs(){var f=loadFavs();var el=document.getElementById("favList");if(!f.length){el.innerHTML='<div class="panel-empty">No favourites yet</div>';return;}
 var h="";for(var i=0;i<f.length;i++){var t=talkMap[f[i]];if(!t)continue;
-h+='<div class="panel-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" loading="lazy" onerror="this.innerHTML=\'\'"></div><div class="info"><div class="title">'+esc((t.title||"").substring(0,28))+'</div><span class="chan">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div><span class="del-btn" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')">\\u2715</span></div>';}
+h+='<div class="panel-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" loading="lazy" onerror="this.innerHTML=\'\'"></div><div class="info"><div class="title">'+esc((t.title||"").substring(0,28))+'</div><span class="chan">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div><span class="del-btn" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')">\u2715</span></div>';}
 el.innerHTML=h||"<div class='panel-empty'>None</div>";}
 function renderRecent(){var r=loadRecent();var el=document.getElementById("recentList");if(!r.length){el.innerHTML='<div class="panel-empty">No recent talks</div>';return;}
 var h="";for(var i=0;i<r.length;i++){var t=talkMap[r[i].id];if(!t)continue;
