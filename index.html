@@ -101231,6 +101231,7 @@ showTalk(id,true);}
 
 function showTalk(id,fromNav){
 var t=talkMap[id];if(!t)return;
+closeVideo();
 var th=document.getElementById("talkHeader");
 var star=isFavourite(id)?'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\u2605</button>':'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\u2606</button>';
 var badge='<span style="font-size:11px;background:var(--border-light);padding:2px 8px;border-radius:4px;">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span>';
