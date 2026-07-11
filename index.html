@@ -101220,7 +101220,7 @@ var t=talkMap[id];if(!t)return;
 var th=document.getElementById("talkHeader");
 var star=isFavourite(id)?'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\\u2605</button>':'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\\u2606</button>';
 var badge='<span style="font-size:11px;background:var(--border-light);padding:2px 8px;border-radius:4px;">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span>';
-var thumb='<div class="video-thumb" onclick="toggleVideo(\''+t.videoId+'\')"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" onerror="this.style.display=\'none\'"><span class="play-icon"></span></div>';
+var thumb='<div class="video-thumb" onclick="window.open(\'https://www.youtube.com/watch?v='+t.videoId+'\')"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" onerror="this.style.display=\'none\'"><span class="play-icon"></span></div>';
 var ytLink='<a class="watch-btn" href="intent://www.youtube.com/watch?v='+t.videoId+'#Intent;scheme=https;package=com.google.android.youtube;end" target="_blank" rel="noopener">\\u25B6 Watch on YouTube</a>';
 th.innerHTML='<a class="talk-back" onclick="goBackFromTalk()">\\u2190 Back to talks</a><h1>'+esc(t.title)+' '+star+'</h1>'+badge+thumb+'<div class="talk-actions">'+ytLink+'</div>';
 location.hash=id;}
