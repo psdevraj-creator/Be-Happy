@@ -101094,7 +101094,7 @@ var CATALOG_DATA = {sections:[]};
 })();
 
 // ── STATE ──────────────────────────────────────────────────
-var talkMap={},activeTalkId=null,SORT_MODE="playlist",isDraggingVideo=false,videoHeight=380;
+var talkMap={},activeTalkId=null,SORT_MODE="playlist",isDraggingVideo=false,videoHeight=380,player=null;
 
 // ── INIT ───────────────────────────────────────────────────
 function init(){
@@ -101234,7 +101234,7 @@ var t=talkMap[id];if(!t)return;
 var th=document.getElementById("talkHeader");
 var star=isFavourite(id)?'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\u2605</button>':'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\u2606</button>';
 var badge='<span style="font-size:11px;background:var(--border-light);padding:2px 8px;border-radius:4px;">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span>';
-var thumb='<div class="video-thumb" onclick="window.open(\'https://www.youtube.com/watch?v='+t.videoId+'\')"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" onerror="this.style.display=\'none\'"><span class="play-icon"></span></div>';
+var thumb='<div class="video-thumb" onclick="toggleVideo(\''+t.videoId+'\')"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" onerror="this.style.display=\'none\'"><span class="play-icon"></span></div>';
 var ytLink='<button class="watch-btn" onclick="toggleVideo(\''+t.videoId+'\')">\u25B6 Watch</button>';
 var ytLink2='<a class="youtube-link" href="https://www.youtube.com/watch?v='+t.videoId+'" target="_blank" rel="noopener">\u25B6 YouTube</a>';
 th.innerHTML='<a class="talk-back" onclick="goBackFromTalk()">\u2190 Back to talks</a><h1>'+esc(t.title)+' '+star+'</h1>'+badge+thumb+'<div class="talk-actions">'+ytLink+ytLink2+'</div>';
@@ -101247,15 +101247,15 @@ var vp=document.getElementById("videoPane");var dv=document.getElementById("divi
 if(!videoId){alert("No video URL available.");return;}
 if(vp.classList.contains("active")){closeVideo();return;}
 vp.classList.add("active");dv.classList.add("active");vp.style.height=videoHeight+"px";
-if(!window.player){
+if(!player){
 var tag=document.createElement("script");tag.src="https://www.youtube.com/iframe_api";
 document.getElementsByTagName("script")[0].parentNode.insertBefore(tag,document.getElementsByTagName("script")[0]);
 window._pendingVideoId=videoId;
-}else{window.player.loadVideoById(videoId);}
+}else{player.loadVideoById(videoId);}
 document.querySelectorAll(".watch-btn").forEach(function(b){b.textContent="Close";b.classList.add("watching");});}
 
-function closeVideo(){var vp=document.getElementById("videoPane");var dv=document.getElementById("divider");vp.classList.remove("active");dv.classList.remove("active");if(window.player)window.player.stopVideo();document.querySelectorAll(".watch-btn").forEach(function(b){b.textContent="\u25B6 Watch";b.classList.remove("watching");});}
-function onYouTubeIframeAPIReady(){var id=window._pendingVideoId||"";if(!id)return;window.player=new YT.Player("player",{height:"100%",width:"100%",videoId:id,playerVars:{autoplay:1,rel:0}});}
+function closeVideo(){var vp=document.getElementById("videoPane");var dv=document.getElementById("divider");vp.classList.remove("active");dv.classList.remove("active");if(player)player.stopVideo();document.querySelectorAll(".watch-btn").forEach(function(b){b.textContent="\u25B6 Watch";b.classList.remove("watching");});}
+function onYouTubeIframeAPIReady(){var id=window._pendingVideoId||"";if(!id)return;player=new YT.Player("player",{height:"100%",width:"100%",videoId:id,playerVars:{autoplay:1,rel:0}});}
 document.getElementById("videoClose").addEventListener("click",closeVideo);
 
 function togglePanel(){
