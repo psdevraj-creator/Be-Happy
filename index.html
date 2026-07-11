@@ -43,7 +43,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .talk-card .thumb-placeholder img{width:100%;height:100%;object-fit:cover;}
 .talk-card .card-title{font-size:12px;}
 .channel-tag{display:inline-block;font-size:9px;background:var(--border-light);padding:1px 5px;border-radius:3px;color:var(--text-muted);}
-.side-panel{width:230px;flex-shrink:0;background:var(--nav-bg);border-left:1px solid var(--border);padding:12px;position:sticky;top:0;height:calc(100vh - 140px);overflow-y:auto;}
+.side-panel{width:230px;flex-shrink:0;background:var(--nav-bg);border-left:1px solid var(--border);padding:12px;position:sticky;top:0;height:calc(100vh - 140px);overflow-y:auto;transition:width .3s ease;}
 .panel-section{margin-bottom:16px;}
 .panel-section h3{font-family:'Playfair Display',serif;font-size:13px;color:var(--text);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border-light);}
 .panel-list{max-height:280px;overflow-y:auto;}
@@ -61,6 +61,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .panel-card .chan{font-size:8px;color:var(--text-muted);}
 .panel-card .del-btn{font-size:12px;cursor:pointer;color:var(--text-muted);flex-shrink:0;line-height:1;}
 .panel-card .del-btn:hover{color:#c0392b;}
+.panel-toggle{position:sticky;top:6px;width:24px;flex-shrink:0;height:24px;background:var(--nav-bg);border:1px solid var(--border);border-left:none;border-radius:0 4px 4px 0;cursor:pointer;font-size:11px;color:var(--primary);display:flex;align-items:center;justify-content:center;z-index:10;padding:0;transition:all .25s;margin-top:8px;}
+.panel-toggle:hover{background:var(--primary-light);}
+.side-panel.collapsed{width:0;padding:0;border-left:none;overflow:hidden;}
 .talk-view{display:none;}
 .talk-view.active{display:block;}
 .talk-back{font-size:12px;color:var(--primary);cursor:pointer;margin-bottom:6px;display:inline-block;}
@@ -78,6 +81,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .load-btn{background:var(--primary-soft);color:#fff;}
 .transcribe-btn{background:var(--primary);color:#fff;}
 @media (max-width:768px){
+.panel-toggle{display:none;}
 .layout{flex-direction:column;}
 .side-panel{width:100%;border-left:none;border-top:1px solid var(--border);height:auto;max-height:180px;}
 .card-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
@@ -187,7 +191,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 <div class="talk-header" id="talkHeader"></div>
 </div>
 </main>
-<aside class="side-panel">
+<button class="panel-toggle" id="panelToggle" onclick="togglePanel()" title="Hide panel">&#9664;</button>
+<aside class="side-panel" id="sidePanel">
 <div class="panel-section"><h3>⭐ Favourites</h3><div class="panel-list" id="favList"><div class="panel-empty">No favourites yet</div></div></div>
 <div class="panel-section"><h3>⌚ Recent</h3><div class="panel-list" id="recentList"><div class="panel-empty">No recent talks</div></div></div>
 </aside>
@@ -101145,6 +101150,7 @@ if(!CATALOG_DATA||!CATALOG_DATA.sections||!CATALOG_DATA.sections.length){documen
 buildTalkMap(CATALOG_DATA);
 var m=document.getElementById("meta");
 if(m)m.textContent=CATALOG_DATA.meta.totalSections+" sections  "+CATALOG_DATA.meta.totalPlaylists+" playlists  "+CATALOG_DATA.meta.totalTalks+" talks";
+try{if(localStorage.getItem("bhtalks_panel")==="1"){document.getElementById("sidePanel").classList.add("collapsed");document.getElementById("panelToggle").innerHTML="&#9654;";}}catch(e){}
 renderView();updateSidePanel();
 if(location.hash){var id=location.hash.replace("#","");if(talkMap[id])goToTalk(id);}
 }catch(e){console.error(e);}}
@@ -101173,7 +101179,9 @@ renderBreadcrumb();document.getElementById("cardGrid").className="card-grid";doc
 if(top.type==="talk"){showTalk(top.id,true);return;}
 if(top.type==="home")renderHome();
 else if(top.type==="section")renderSectionCards(top.id);
-else if(top.type==="playlist")renderTalkCards(top.id);}
+else if(top.type==="playlist")renderTalkCards(top.id);
+else if(top.type==="dateYear")renderDateMonthCards(top.id);
+else if(top.type==="dateMonth")renderDateTalkCards(top.year,top.month);}
 
 function renderBreadcrumb(){
 var h="";var nc=navStack.length;
@@ -101191,7 +101199,7 @@ for(var ii=0;ii<sec.items.length;ii++){var it=sec.items[ii];if(it.type==="playli
 h+='<div class="card section-card" onclick="navigateToSection(\''+sec.id+'\',\''+esc(sec.name)+'\')"><div class="card-title">'+esc(sec.name)+'</div><div class="card-count">'+cnt+' talks</div></div>';}}
 else if(activeMode==="alpha"){
 var all=getAllTalks();all.sort(function(a,b){var ta=(a.talk.title||"").toLowerCase(),tb=(b.talk.title||"").toLowerCase();return ta<tb?-1:ta>tb?1:0;});
-for(var i=0;i<all.length;i++){var t=all[i].talk;h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="card-title">'+esc(t.title)+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}}
+for(var i=0;i<all.length;i++){var t=all[i].talk;h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}}
 else if(activeMode==="date"){
 var tree={};var all=getAllTalks();
 for(var i=0;i<all.length;i++){var t=all[i].talk;var yr=t.uploadDate?t.uploadDate.substring(0,4):"Unknown";if(!tree[yr])tree[yr]=[];tree[yr].push(all[i]);}
@@ -101222,6 +101230,21 @@ for(var ti=0;ti<it.talks.length;ti++){var t=it.talks[ti];
 h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title)+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
 cg.innerHTML=h;}
 
+function navigateToDateYear(y){navStack.push({type:"dateYear",id:y,name:y});renderView();}
+function renderDateMonthCards(y){
+var cg=document.getElementById("cardGrid");cg.className="card-grid";var h="";var tree={};
+var all=getAllTalks();
+for(var i=0;i<all.length;i++){var t=all[i].talk;if((t.uploadDate?t.uploadDate.substring(0,4):"Unknown")!==y)continue;var m=t.uploadDate?parseInt(t.uploadDate.substring(4,6),10):0;if(!tree[m])tree[m]=[];tree[m].push(all[i]);}
+var ms=Object.keys(tree).sort(function(a,b){return a-b;});
+for(var mi=0;mi<ms.length;mi++){var mn=MONTHS[ms[mi]]||"Unknown";h+='<div class="card section-card" onclick="navigateToDateMonth(\''+y+'\',\''+ms[mi]+'\',\''+esc(mn)+'\')"><div class="card-title">'+esc(mn)+'</div><div class="card-count">'+tree[ms[mi]].length+' talks</div></div>';}
+cg.innerHTML=h||'<div class="no-results">No talks found</div>';}
+function navigateToDateMonth(y,m,n){navStack.push({type:"dateMonth",id:y+"-"+m,name:n,year:y,month:m});renderView();}
+function renderDateTalkCards(y,m){
+var cg=document.getElementById("cardGrid");cg.className="card-grid talk-grid";var h="";var all=getAllTalks();
+for(var i=0;i<all.length;i++){var t=all[i].talk;var yr=t.uploadDate?t.uploadDate.substring(0,4):"Unknown";var mo=t.uploadDate?parseInt(t.uploadDate.substring(4,6),10):0;if(yr!==y||mo!==parseInt(m,10))continue;
+h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
+cg.innerHTML=h||'<div class="no-results">No talks found</div>';}
+
 function goToTalk(id){
 var t=talkMap[id];if(!t)return;
 navStack.push({type:"talk",id:id,name:t.title});
@@ -101241,6 +101264,14 @@ th.innerHTML='<a class="talk-back" onclick="goBackFromTalk()">\\u2190 Back to ta
 location.hash=id;}
 
 function goBackFromTalk(){navStack.pop();document.getElementById("talkView").classList.remove("active");renderView();}
+
+function togglePanel(){
+var p=document.getElementById("sidePanel");
+var t=document.getElementById("panelToggle");
+var c=p.classList.toggle("collapsed");
+t.innerHTML=c?"&#9654;":"&#9664;";
+t.title=c?"Show panel":"Hide panel";
+try{localStorage.setItem("bhtalks_panel",c?"1":"0");}catch(e){}}
 
 function loadFavs(){try{return JSON.parse(localStorage.getItem("bhtalks_favs")||"[]");}catch(e){return [];}}
 function saveFavs(f){localStorage.setItem("bhtalks_favs",JSON.stringify(f));}
