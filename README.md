@@ -1,21 +1,50 @@
-# Be Happy — Catalog of Discourses by Swami Anubhavananda
+# Be Happy — Swami Anubhavananda Talks
 
-Password-protected catalog of 5,907 Vedanta talks across 1,225 playlists in 8 sections.
+Self-contained PWA catalog of Vedanta talks from [@smilingswami](https://www.youtube.com/@smilingswami) and [@swamianubhavanandajissatsa8242](https://www.youtube.com/@swamianubhavanandajissatsa8242).
+
+**10,904 talks** across **1,950 playlists** in **8 sections**.
+
+## What's Included
+
+| File | Purpose |
+|------|---------|
+| `BHTalks.html` | Self-contained catalog — open anywhere, works offline |
+| `manifest.json` | PWA manifest for Android "Add to Home Screen" |
+| `sw.js` | Service worker for offline cache |
+| `icons/` | App icons (192x192, 512x512) |
+
+## How to Use
+
+### Direct download
+Download `BHTalks.html` → open in any browser — sidebar works, search works, videos play embedded.
+
+### Install as Android app
+1. Host this folder on any web server (GitHub Pages works)
+2. Visit the URL on Android Chrome
+3. Tap "Add to Home Screen"
+
+The app launches fullscreen with no URL bar. Catalog data works offline (videos need internet).
+
+### Features
+- **3 sort modes**: By Playlist | Newest First | A-Z
+- **Search** — filters by talk title in real-time
+- **Resizable sidebar** — drag to expand
+- **YouTube embed** — videos play inline or open in YouTube app
+- **Channel badges** — shows @smilingswami / @satsa8242 per talk
+
+## Build from source
+
+```bash
+python catalog.py                 # Build catalog from YouTube (optional)
+python build_android.py           # Regenerate BHTalks.html + PWA files
+```
 
 ## Sections
-- Upanishads — 520 talks
-- Bhagvad Gita — 174 talks
-- General Bhagvad Gita Talks — 333 talks
-- Advaita Gitas — 202 talks
-- Prakarana Granthas — 591 talks
-- Yoga & Meditation — 704 talks
-- Bhakti & Devotion — 235 talks
-- Satsangs — 3,148 talks
-
-## How to use
-1. Open `index.html` in a browser (needs a web server due to file size — use any local server or GitHub Pages)
-2. Enter password to access
-3. Browse talks by section → playlist → talk
-4. Click "▶ Watch on YouTube" for split-view with video + resizable transcript
-5. Use the search bar to filter talks by title
-6. Drag the sidebar divider to adjust width
+- Upanishads
+- Bhagvad Gita
+- General Bhagvad Gita Talks
+- Advaita Gitas
+- Prakarana Granthas
+- Yoga & Meditation
+- Bhakti & Devotion
+- Satsangs
