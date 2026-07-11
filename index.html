@@ -101245,11 +101245,11 @@ function addRecent(id,title){var r=loadRecent();var i=r.findIndex(function(x){re
 function updateSidePanel(){renderFavs();renderRecent();}
 function renderFavs(){var f=loadFavs();var el=document.getElementById("favList");if(!f.length){el.innerHTML='<div class="panel-empty">No favourites yet</div>';return;}
 var h="";for(var i=0;i<f.length;i++){var t=talkMap[f[i]];if(!t)continue;
-h+='<div class="panel-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" loading="lazy" onerror="this.innerHTML=\'\'"></div><div class="info"><div class="title">'+esc(t.title.substring(0,28))+'</div><span class="chan">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div><span class="del-btn" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')">\\u2715</span></div>';}
+h+='<div class="panel-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" loading="lazy" onerror="this.innerHTML=\'\'"></div><div class="info"><div class="title">'+esc((t.title||"").substring(0,28))+'</div><span class="chan">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div><span class="del-btn" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')">\\u2715</span></div>';}
 el.innerHTML=h||"<div class='panel-empty'>None</div>";}
 function renderRecent(){var r=loadRecent();var el=document.getElementById("recentList");if(!r.length){el.innerHTML='<div class="panel-empty">No recent talks</div>';return;}
 var h="";for(var i=0;i<r.length;i++){var t=talkMap[r[i].id];if(!t)continue;
-h+='<div class="panel-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" loading="lazy" onerror="this.innerHTML=\'\'"></div><div class="info"><div class="title">'+esc(t.title.substring(0,28))+'</div><span class="chan">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div></div>';}
+h+='<div class="panel-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" loading="lazy" onerror="this.innerHTML=\'\'"></div><div class="info"><div class="title">'+esc((t.title||"").substring(0,28))+'</div><span class="chan">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div></div>';}
 el.innerHTML=h||"<div class='panel-empty'>None</div>";}
 
 document.getElementById("search").addEventListener("input",function(){clearTimeout(window._st);window._st=setTimeout(function(){searchQuery=this.value.trim().toLowerCase();renderView();}.bind(this),200);});
