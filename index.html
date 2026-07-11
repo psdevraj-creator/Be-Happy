@@ -101092,7 +101092,7 @@ var navStack=[{type:"home",name:"Home"}],activeMode="playlist",searchQuery="";
 var MONTHS=["","January","February","March","April","May","June","July","August","September","October","November","December"];
 
 function getTitleBase(s){return String(s||"").replace(/\s+\d+\s+of\s+\d+/gi,"").replace(/\s+#\d+/gi,"").replace(/\s+Chapter\s+\d+/gi,"").replace(/\s+Part\s+\d+/gi,"").replace(/\s+Talk\s+\d+/gi,"").replace(/\s+\d+\s*[-–]\s*\d+/gi,"").replace(/^\d+\s*/g,"").trim().toLowerCase();}
-var GROUP_COLORS=["#FFF0E0","#E8F4E8","#E8F0FF","#FFF8E0","#F8E8FF","#E8FFF4","#FFE8E8","#F0F0FF","#E8FFE8","#FFF0F8","#F0F8FF","#FFE8F0"];
+var GROUP_COLORS=["#F5DEB3","#C8E6C8","#C8D8F0","#F0E6C8","#E0C8F0","#B8E8D8","#F0C8C8","#D0D0F0","#D8E8C8","#F0D0E0","#D0E0F0","#F0D8C8"];
 function getTalkGroupColors(talks){var g={};for(var i=0;i<talks.length;i++){var k=getTitleBase(talks[i].title);if(!g[k])g[k]=[];g[k].push(talks[i]);}
 var r={},ci=0;for(var k in g){if(g[k].length>=2){for(var j=0;j<g[k].length;j++)r[g[k][j].id]=GROUP_COLORS[ci%GROUP_COLORS.length];ci++;}}return r;}
 
@@ -101146,9 +101146,11 @@ function navigateToSection(id,n){navStack.push({type:"section",id:id,name:n});re
 function renderSectionCards(sid){
 var cg=document.getElementById("cardGrid");cg.className="card-grid";
 for(var si=0;si<CATALOG_DATA.sections.length;si++){var sec=CATALOG_DATA.sections[si];if(sec.id!==sid)continue;var h="";
-for(var ii=0;ii<sec.items.length;ii++){var it=sec.items[ii];
-if(it.type==="playlist")h+='<div class="card" onclick="navigateToPlaylist(\''+it.id+'\',\''+esc(it.name)+'\')"><div class="card-title">'+esc(it.name)+'</div><div class="card-count">'+it.talks.length+' talks</div></div>';
-else if(it.type==="group")h+='<div class="card" onclick="navigateToPlaylist(\''+it.id+'\',\''+esc(it.name)+'\')"><div class="card-title">'+esc(it.name)+'</div><div class="card-count">'+(it.playlists.length)+' playlists</div></div>';}
+var items=[];for(var ii=0;ii<sec.items.length;ii++)items.push({id:sec.items[ii].id,title:sec.items[ii].name});
+var colors=getTalkGroupColors(items);
+for(var ii=0;ii<sec.items.length;ii++){var it=sec.items[ii];var c=colors[it.id]||"";
+if(it.type==="playlist")h+='<div class="card" onclick="navigateToPlaylist(\''+it.id+'\',\''+esc(it.name)+'\')"'+(c?' style="background-color:'+c+'"':'')+'><div class="card-title">'+esc(it.name)+'</div><div class="card-count">'+it.talks.length+' talks</div></div>';
+else if(it.type==="group")h+='<div class="card" onclick="navigateToPlaylist(\''+it.id+'\',\''+esc(it.name)+'\')"'+(c?' style="background-color:'+c+'"':'')+'><div class="card-title">'+esc(it.name)+'</div><div class="card-count">'+(it.playlists.length)+' playlists</div></div>';}
 cg.innerHTML=h||'<div class="no-results">No playlists found</div>';break;}}
 
 function navigateToPlaylist(id,n){navStack.push({type:"playlist",id:id,name:n});renderView();}
