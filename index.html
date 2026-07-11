@@ -89,83 +89,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .hero-photo{width:60px;height:60px;}
 .content{padding:8px 10px;}
 }
-.hero{background:linear-gradient(135deg,#FAF0E6 0%,#FCF9F5 50%,#FFF8F0 100%);border-bottom:1px solid var(--border);padding:24px 16px 20px;text-align:center;}
-.hero-inner{max-width:600px;margin:0 auto;}
-.hero-photo{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);box-shadow:0 4px 20px rgba(199,107,30,0.15);margin-bottom:10px;}
-.hero h1{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:var(--primary);letter-spacing:-0.02em;margin-bottom:4px;}
-.hero .subtitle{font-size:14px;color:var(--text-soft);}
-.hero .meta{font-size:11px;color:var(--text-muted);margin-top:6px;}
-.menu-toggle{display:none;position:fixed;top:10px;left:10px;z-index:101;width:32px;height:32px;border-radius:6px;background:var(--primary);color:#fff;border:none;font-size:18px;cursor:pointer;align-items:center;justify-content:center;}
-.menu-toggle:hover{background:#B05E18;}
-.sidebar-overlay{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,0.3);}
-.sidebar-overlay.open{display:block;}
 
-.layout{display:flex;min-height:calc(100vh - 140px);}
-
-.sidebar{width:300px;flex-shrink:0;background:var(--nav-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:calc(100vh - 140px);overflow:hidden;}
-.sidebar-divider{width:5px;flex-shrink:0;cursor:ew-resize;background:var(--border);position:relative;}
-.sidebar-divider:hover{background:var(--primary-light);}
-.sidebar-divider::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:30px;width:3px;border-radius:2px;background:var(--text-muted);opacity:0.3;}
-
-.search-box{padding:8px 10px;border-bottom:1px solid var(--border);}
-.search-box input{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;background:var(--surface);color:var(--text);outline:none;}
-.search-box input:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(199,107,30,0.1);}
-.sort-bar{display:flex;gap:3px;padding:5px 8px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
-.sort-btn{padding:3px 10px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text-muted);font-family:inherit;font-size:10px;cursor:pointer;font-weight:500;transition:all 0.15s;white-space:nowrap;}
-.sort-btn:hover{background:var(--nav-hover);}
-.sort-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
-.flat-count{padding:4px 8px;font-size:10px;color:var(--text-muted);}
-.sidebar-inner{flex:1;overflow-y:auto;padding:6px;}
-.nav-section{margin-bottom:1px;}
-.nav-section-toggle{width:100%;text-align:left;background:none;border:none;padding:6px 8px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;border-radius:var(--radius-sm);display:flex;align-items:center;gap:4px;user-select:none;}
-.nav-section-toggle:hover{background:var(--nav-hover);}
-.nav-caret{font-size:8px;color:var(--primary);flex-shrink:0;transition:transform 0.2s;display:inline-block;width:10px;text-align:center;}
-.nav-caret.open{transform:rotate(90deg);}
-.nav-count{margin-left:auto;font-size:9px;color:var(--text-muted);background:var(--border-light);padding:1px 5px;border-radius:8px;flex-shrink:0;}
-.nav-children{display:none;}
-.nav-children.open{display:block;}
-.nav-pl-toggle{width:100%;text-align:left;background:none;border:none;padding:3px 8px 3px 16px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--text-soft);cursor:pointer;border-radius:var(--radius-sm);display:flex;align-items:center;gap:3px;user-select:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.nav-pl-toggle:hover{background:var(--nav-hover);}
-.nav-talk{display:flex;align-items:center;gap:3px;padding:2px 8px 2px 28px;font-size:11px;color:var(--text-muted);text-decoration:none;border-radius:4px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.nav-talk:hover{background:var(--primary-light);color:var(--primary);}
-.nav-talk.active{background:var(--primary-light);color:var(--primary);font-weight:600;}
-.channel-badge{font-size:8px;background:var(--border-light);padding:0 4px;border-radius:3px;color:var(--text-muted);flex-shrink:0;margin-left:auto;}
-.search-empty{padding:12px 10px;text-align:center;color:var(--text-muted);font-size:12px;}
-
-.content{flex:1;min-width:0;padding:16px 20px 60px;max-width:800px;}
-.welcome{text-align:center;padding:60px 16px;color:var(--text-muted);}
-.welcome p{font-size:16px;}
-.talk-view{display:none;}
-.talk-view.active{display:block;}
-
-.talk-header{margin-bottom:16px;}
-.talk-header h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--text);margin-bottom:6px;}
-.talk-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
-.channel-badge-lg{font-size:11px;background:var(--border-light);padding:2px 8px;border-radius:4px;color:var(--text-soft);}
-
-.player-wrapper{position:relative;width:100%;padding-bottom:56.25%;background:#000;border-radius:var(--radius);overflow:hidden;margin-bottom:12px;}
-.player-wrapper iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
-
-.action-buttons{display:flex;gap:8px;margin-bottom:16px;}
-.watch-btn{display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;text-decoration:none;transition:background 0.2s;}
-.watch-btn:hover{background:#B05E18;}
-.youtube-link{display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--text);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;text-decoration:none;transition:background 0.2s;}
-.youtube-link:hover{background:var(--text);opacity:0.8;}
-
-.talk-description{font-size:14px;color:var(--text-soft);margin-bottom:16px;line-height:1.7;}
-
-@media (max-width:768px){
-.layout{flex-direction:column;}
-.sidebar{width:100%!important;position:fixed;top:0;left:0;height:100vh;z-index:100;transform:translateX(-100%);transition:transform 0.3s;}
-.sidebar.open{transform:translateX(0);}
-.content{padding:12px 14px;}
-.hero h1{font-size:24px;}
-.hero{padding:16px 12px 14px;}
-.hero-photo{width:70px;height:70px;}
-.menu-toggle{display:flex!important;}
-.talk-header h1{font-size:18px;}
-}
-@media print{.sidebar{display:none;}.layout{display:block;}}
 </style>
 </head>
 <body>
@@ -101174,6 +101098,7 @@ renderView();}
 
 function renderView(){
 if(!CATALOG_DATA)return;
+if(searchQuery){renderSearchResults();return;}
 var top=navStack[navStack.length-1];
 renderBreadcrumb();document.getElementById("cardGrid").className="card-grid";document.getElementById("talkView").classList.remove("active");
 if(top.type==="talk"){showTalk(top.id,true);return;}
@@ -101244,6 +101169,17 @@ var cg=document.getElementById("cardGrid");cg.className="card-grid talk-grid";va
 for(var i=0;i<all.length;i++){var t=all[i].talk;var yr=t.uploadDate?t.uploadDate.substring(0,4):"Unknown";var mo=t.uploadDate?parseInt(t.uploadDate.substring(4,6),10):0;if(yr!==y||mo!==parseInt(m,10))continue;
 h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
 cg.innerHTML=h||'<div class="no-results">No talks found</div>';}
+
+function renderSearchResults(){
+var cg=document.getElementById("cardGrid");cg.className="card-grid talk-grid";
+var bc=document.getElementById("breadcrumb");
+var all=getAllTalks();var results=[];
+for(var i=0;i<all.length;i++){var t=all[i].talk;if(t.title&&t.title.toLowerCase().indexOf(searchQuery)>=0)results.push(t);}
+var h="";
+for(var i=0;i<results.length;i++){var t=results[i];
+h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
+bc.innerHTML='Search results for "'+esc(searchQuery)+'" — '+results.length+' talks';
+cg.innerHTML=h||'<div class="no-results">No talks match "'+esc(searchQuery)+'"</div>';}
 
 function goToTalk(id){
 var t=talkMap[id];if(!t)return;
