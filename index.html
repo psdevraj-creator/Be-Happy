@@ -64,8 +64,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .panel-toggle{position:sticky;top:6px;width:24px;flex-shrink:0;height:24px;background:var(--nav-bg);border:1px solid var(--border);border-left:none;border-radius:0 4px 4px 0;cursor:pointer;font-size:11px;color:var(--primary);display:flex;align-items:center;justify-content:center;z-index:10;padding:0;transition:all .25s;margin-top:8px;}
 .panel-toggle:hover{background:var(--primary-light);}
 .side-panel.collapsed{width:0;padding:0;border-left:none;overflow:hidden;}
-.talk-view{display:none;}
-.talk-view.active{display:block;}
+.talk-view{display:none;flex-direction:column;}
+.talk-view.active{display:flex;}
 .talk-back{font-size:12px;color:var(--primary);cursor:pointer;margin-bottom:6px;display:inline-block;}
 .talk-back:hover{text-decoration:underline;}
 .talk-header h1{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:4px;}
@@ -75,11 +75,20 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .video-thumb .play-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .video-thumb .play-icon::after{content:'\25B6';color:#fff;font-size:20px;margin-left:2px;}
 .star-btn{background:none;border:none;cursor:pointer;font-size:20px;line-height:1;vertical-align:middle;}
+.video-pane{display:none;flex-shrink:0;position:relative;background:#000;border-radius:var(--radius) var(--radius) 0 0;overflow:hidden;width:100%;aspect-ratio:16/9;max-height:60vh;}
+.video-pane.active{display:block;}
+.video-pane iframe{width:100%;height:100%;border:none;}
+.video-close{position:absolute;top:6px;right:6px;z-index:10;background:rgba(0,0,0,0.6);color:#fff;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;}
+.divider{display:none;height:8px;cursor:ns-resize;background:var(--border);flex-shrink:0;}
+.divider.active{display:block;}
+.divider:hover{background:var(--primary-light);}
 .watch-btn,.load-btn,.transcribe-btn{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;border:none;transition:background 0.2s;}
 .watch-btn{background:var(--primary);color:#fff;}
 .watch-btn:hover{background:#B05E18;}
 .load-btn{background:var(--primary-soft);color:#fff;}
 .transcribe-btn{background:var(--primary);color:#fff;}
+.youtube-link{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;text-decoration:none;transition:background 0.2s;background:var(--text);color:#fff;}
+.youtube-link:hover{opacity:0.8;}
 @media (max-width:768px){
 .panel-toggle{display:none;}
 .layout{flex-direction:column;}
@@ -113,6 +122,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 <div id="cardGrid"></div>
 <div class="talk-view" id="talkView">
 <div class="talk-header" id="talkHeader"></div>
+<div class="video-pane" id="videoPane">
+<button class="video-close" id="videoClose">&times;</button>
+<div id="player"></div>
+</div>
+<div class="divider" id="divider"></div>
 </div>
 </main>
 <button class="panel-toggle" id="panelToggle" onclick="togglePanel()" title="Hide panel">&#9664;</button>
@@ -101080,7 +101094,7 @@ var CATALOG_DATA = {sections:[]};
 })();
 
 // ── STATE ──────────────────────────────────────────────────
-var talkMap={},activeTalkId=null,SORT_MODE="playlist";
+var talkMap={},activeTalkId=null,SORT_MODE="playlist",isDraggingVideo=false,videoHeight=380;
 
 // ── INIT ───────────────────────────────────────────────────
 function init(){
@@ -101221,11 +101235,28 @@ var th=document.getElementById("talkHeader");
 var star=isFavourite(id)?'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\u2605</button>':'<button class="star-btn" onclick="toggleFav(\''+id+'\')">\u2606</button>';
 var badge='<span style="font-size:11px;background:var(--border-light);padding:2px 8px;border-radius:4px;">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span>';
 var thumb='<div class="video-thumb" onclick="window.open(\'https://www.youtube.com/watch?v='+t.videoId+'\')"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" onerror="this.style.display=\'none\'"><span class="play-icon"></span></div>';
-var ytLink='<a class="watch-btn" href="intent://www.youtube.com/watch?v='+t.videoId+'#Intent;scheme=https;package=com.google.android.youtube;end" target="_blank" rel="noopener">\u25B6 Watch on YouTube</a>';
-th.innerHTML='<a class="talk-back" onclick="goBackFromTalk()">\u2190 Back to talks</a><h1>'+esc(t.title)+' '+star+'</h1>'+badge+thumb+'<div class="talk-actions">'+ytLink+'</div>';
+var ytLink='<button class="watch-btn" onclick="toggleVideo(\''+t.videoId+'\')">\u25B6 Watch</button>';
+var ytLink2='<a class="youtube-link" href="https://www.youtube.com/watch?v='+t.videoId+'" target="_blank" rel="noopener">\u25B6 YouTube</a>';
+th.innerHTML='<a class="talk-back" onclick="goBackFromTalk()">\u2190 Back to talks</a><h1>'+esc(t.title)+' '+star+'</h1>'+badge+thumb+'<div class="talk-actions">'+ytLink+ytLink2+'</div>';
 location.hash=id;}
 
 function goBackFromTalk(){navStack.pop();document.getElementById("talkView").classList.remove("active");renderView();}
+
+function toggleVideo(videoId){
+var vp=document.getElementById("videoPane");var dv=document.getElementById("divider");
+if(!videoId){alert("No video URL available.");return;}
+if(vp.classList.contains("active")){closeVideo();return;}
+vp.classList.add("active");dv.classList.add("active");vp.style.height=videoHeight+"px";
+if(!window.player){
+var tag=document.createElement("script");tag.src="https://www.youtube.com/iframe_api";
+document.getElementsByTagName("script")[0].parentNode.insertBefore(tag,document.getElementsByTagName("script")[0]);
+window._pendingVideoId=videoId;
+}else{window.player.loadVideoById(videoId);}
+document.querySelectorAll(".watch-btn").forEach(function(b){b.textContent="Close";b.classList.add("watching");});}
+
+function closeVideo(){var vp=document.getElementById("videoPane");var dv=document.getElementById("divider");vp.classList.remove("active");dv.classList.remove("active");if(window.player)window.player.stopVideo();document.querySelectorAll(".watch-btn").forEach(function(b){b.textContent="\u25B6 Watch";b.classList.remove("watching");});}
+function onYouTubeIframeAPIReady(){var id=window._pendingVideoId||"";if(!id)return;window.player=new YT.Player("player",{height:"100%",width:"100%",videoId:id,playerVars:{autoplay:1,rel:0}});}
+document.getElementById("videoClose").addEventListener("click",closeVideo);
 
 function togglePanel(){
 var p=document.getElementById("sidePanel");
@@ -101255,6 +101286,12 @@ el.innerHTML=h||"<div class='panel-empty'>None</div>";}
 document.getElementById("search").addEventListener("input",function(){clearTimeout(window._st);window._st=setTimeout(function(){searchQuery=this.value.trim().toLowerCase();renderView();}.bind(this),200);});
 
 window.addEventListener("hashchange",function(){var id=location.hash.replace("#","");if(id&&talkMap[id])goToTalk(id);});
+
+// Resizable video divider
+document.getElementById("divider").addEventListener("mousedown",function(e){isDraggingVideo=true;document.body.style.cursor="ns-resize";document.body.style.userSelect="none";});
+document.addEventListener("mousemove",function(e){if(!isDraggingVideo)return;var tv=document.getElementById("talkView");var rect=tv.getBoundingClientRect();var y=e.clientY-rect.top;videoHeight=Math.max(100,Math.min(rect.height-150,y-20));document.getElementById("videoPane").style.height=videoHeight+"px";});
+document.addEventListener("mouseup",function(){isDraggingVideo=false;document.body.style.cursor="";document.body.style.userSelect="";});
+
 init();
 </script>
 </body>
