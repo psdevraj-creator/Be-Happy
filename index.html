@@ -101091,6 +101091,11 @@ function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").repl
 var navStack=[{type:"home",name:"Home"}],activeMode="playlist",searchQuery="";
 var MONTHS=["","January","February","March","April","May","June","July","August","September","October","November","December"];
 
+function getTitleBase(s){return String(s||"").replace(/\s+\d+\s+of\s+\d+/gi,"").replace(/\s+#\d+/gi,"").replace(/\s+Chapter\s+\d+/gi,"").replace(/\s+Part\s+\d+/gi,"").replace(/\s+Talk\s+\d+/gi,"").replace(/\s+\d+\s*[-–]\s*\d+/gi,"").replace(/^\d+\s*/g,"").trim().toLowerCase();}
+var GROUP_COLORS=["#FFF0E0","#E8F4E8","#E8F0FF","#FFF8E0","#F8E8FF","#E8FFF4","#FFE8E8","#F0F0FF","#E8FFE8","#FFF0F8","#F0F8FF","#FFE8F0"];
+function getTalkGroupColors(talks){var g={};for(var i=0;i<talks.length;i++){var k=getTitleBase(talks[i].title);if(!g[k])g[k]=[];g[k].push(talks[i]);}
+var r={},ci=0;for(var k in g){if(g[k].length>=2){for(var j=0;j<g[k].length;j++)r[g[k][j].id]=GROUP_COLORS[ci%GROUP_COLORS.length];ci++;}}return r;}
+
 function setCardMode(m){
 activeMode=m;navStack=[{type:"home",name:"Home"}];
 document.querySelectorAll(".sort-btn").forEach(function(b){b.classList.toggle("active",b.dataset.mode===m);});
@@ -101124,7 +101129,9 @@ for(var ii=0;ii<sec.items.length;ii++){var it=sec.items[ii];if(it.type==="playli
 h+='<div class="card section-card" onclick="navigateToSection(\''+sec.id+'\',\''+esc(sec.name)+'\')"><div class="card-title">'+esc(sec.name)+'</div><div class="card-count">'+cnt+' talks</div></div>';}}
 else if(activeMode==="alpha"){
 var all=getAllTalks();all.sort(function(a,b){var ta=(a.talk.title||"").toLowerCase(),tb=(b.talk.title||"").toLowerCase();return ta<tb?-1:ta>tb?1:0;});
-for(var i=0;i<all.length;i++){var t=all[i].talk;h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}}
+var talks=all.map(function(x){return x.talk;});var colors=getTalkGroupColors(talks);
+for(var i=0;i<talks.length;i++){var t=talks[i];var c=colors[t.id]||"";
+h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"'+(c?' style="background-color:'+c+'"':'')+'><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}}
 else if(activeMode==="date"){
 var tree={};var all=getAllTalks();
 for(var i=0;i<all.length;i++){var t=all[i].talk;var yr=t.uploadDate?t.uploadDate.substring(0,4):"Unknown";if(!tree[yr])tree[yr]=[];tree[yr].push(all[i]);}
@@ -101150,9 +101157,9 @@ function findItem(id){for(var si=0;si<CATALOG_DATA.sections.length;si++){var sec
 
 function renderTalkCards(pid){
 var cg=document.getElementById("cardGrid");cg.className="card-grid talk-grid";var it=findItem(pid);
-if(!it||!it.talks){cg.innerHTML='<div class="no-results">No talks found</div>';return;}var h="";
-for(var ti=0;ti<it.talks.length;ti++){var t=it.talks[ti];
-h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title)+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
+if(!it||!it.talks){cg.innerHTML='<div class="no-results">No talks found</div>';return;}var h="",colors=getTalkGroupColors(it.talks);
+for(var ti=0;ti<it.talks.length;ti++){var t=it.talks[ti];var c=colors[t.id]||"";
+h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"'+(c?' style="background-color:'+c+'"':'')+'><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
 cg.innerHTML=h;}
 
 function navigateToDateYear(y){navStack.push({type:"dateYear",id:y,name:y});renderView();}
@@ -101165,9 +101172,11 @@ for(var mi=0;mi<ms.length;mi++){var mn=MONTHS[ms[mi]]||"Unknown";h+='<div class=
 cg.innerHTML=h||'<div class="no-results">No talks found</div>';}
 function navigateToDateMonth(y,m,n){navStack.push({type:"dateMonth",id:y+"-"+m,name:n,year:y,month:m});renderView();}
 function renderDateTalkCards(y,m){
-var cg=document.getElementById("cardGrid");cg.className="card-grid talk-grid";var h="";var all=getAllTalks();
-for(var i=0;i<all.length;i++){var t=all[i].talk;var yr=t.uploadDate?t.uploadDate.substring(0,4):"Unknown";var mo=t.uploadDate?parseInt(t.uploadDate.substring(4,6),10):0;if(yr!==y||mo!==parseInt(m,10))continue;
-h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
+var cg=document.getElementById("cardGrid");cg.className="card-grid talk-grid";var all=getAllTalks();var talks=[];
+for(var i=0;i<all.length;i++){var t=all[i].talk;var yr=t.uploadDate?t.uploadDate.substring(0,4):"Unknown";var mo=t.uploadDate?parseInt(t.uploadDate.substring(4,6),10):0;if(yr===y&&mo===parseInt(m,10))talks.push(t);}
+var h="",colors=getTalkGroupColors(talks);
+for(var i=0;i<talks.length;i++){var t=talks[i];var c=colors[t.id]||"";
+h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"'+(c?' style="background-color:'+c+'"':'')+'><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
 cg.innerHTML=h||'<div class="no-results">No talks found</div>';}
 
 function renderSearchResults(){
@@ -101175,9 +101184,9 @@ var cg=document.getElementById("cardGrid");cg.className="card-grid talk-grid";
 var bc=document.getElementById("breadcrumb");
 var all=getAllTalks();var results=[];
 for(var i=0;i<all.length;i++){var t=all[i].talk;if(t.title&&t.title.toLowerCase().indexOf(searchQuery)>=0)results.push(t);}
-var h="";
-for(var i=0;i<results.length;i++){var t=results[i];
-h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
+var h="",colors=getTalkGroupColors(results);
+for(var i=0;i<results.length;i++){var t=results[i];var c=colors[t.id]||"";
+h+='<div class="card talk-card" onclick="goToTalk(\''+t.id+'\')"'+(c?' style="background-color:'+c+'"':'')+'><div class="thumb-placeholder"><img src="https://img.youtube.com/vi/'+t.videoId+'/mqdefault.jpg" alt="" onerror="this.style.display=\'none\'" loading="lazy"></div><div class="card-title">'+esc(t.title||"Untitled")+'</div><span class="channel-tag">@'+(t.channel==="smilingswami"?"smilingswami":"satsa8242")+'</span></div>';}
 bc.innerHTML='Search results for "'+esc(searchQuery)+'" — '+results.length+' talks';
 cg.innerHTML=h||'<div class="no-results">No talks match "'+esc(searchQuery)+'"</div>';}
 
