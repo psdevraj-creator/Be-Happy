@@ -1,0 +1,47 @@
+# Environment
+.env
+
+# ChromaDB
+chroma_db/
+gitaverse_cache.sqlite3
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+venv/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Temp downloads
+Transcripts 2/_downloads/
+
+# Cache files
+_catalog_cache.json
+index_state.json
+indexer.log
+eval_logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.bak.*
+
+# Nested git repos (archived copies)
+archive/Vedanta_Study_backup_git/
+archive/Vedanta Study/
+
+# Large transcript directory (too big for git)
+Transcripts 2/
+
+# Auto-generated catalog outputs (rebuild with python build_android.py)
+Be_Happy_Android/
+Be_Happy_GitHub/
