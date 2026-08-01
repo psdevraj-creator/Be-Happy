@@ -1,5 +1,6 @@
 """
 publisher.py — Auto-build static catalog + git push for GitHub Pages mirror.
+Pushes only Be_Happy_GitHub/ contents to origin/gh-pages branch.
 """
 
 import os, sys, subprocess, threading, time
@@ -21,7 +22,7 @@ def git(*args, cwd=None):
         return False, str(e)
 
 def publish_to_github(new_video_ids=None):
-    """Rebuild static HTML, add/commit/push catalog.json + transcripts to GitHub."""
+    """Rebuild static HTML, add/commit/push Be_Happy_GitHub/ to gh-pages branch."""
     global publish_state
     try:
         with _state_lock:
@@ -36,35 +37,30 @@ def publish_to_github(new_video_ids=None):
         with _state_lock:
             publish_state["progress"] = 40
 
-        # Step 2: If GitHub Pages dir is within repo, add those changes too
+        # Step 2: Force-add GitHub Pages dir (bypasses .gitignore)
         if os.path.isdir(GITHUB_PAGES_DIR):
-            ok, _ = git("add", "-A", cwd=GITHUB_PAGES_DIR)
+            ok, _ = git("add", "-f", "-A", cwd=GITHUB_PAGES_DIR)
         with _state_lock:
             publish_state["progress"] = 50
             publish_state["message"] = "Committing changes..."
 
-        # Step 3: git add catalog.json and Transcripts 2/
-        git("add", "catalog.json")
-        git("add", "Transcripts 2/")
-        git("add", "-A")  # catch any other changes
-
-        # Step 4: Commit
+        # Step 3: Commit
         msg = "Auto-update catalog"
         if new_video_ids:
             msg += f" ({len(new_video_ids)} new videos)"
         ok, _ = git("commit", "-m", msg)
         with _state_lock:
             publish_state["progress"] = 70
-            publish_state["message"] = "Pushing to GitHub..."
+            publish_state["message"] = "Pushing to GitHub Pages..."
 
-        # Step 5: Push
-        ok, out = git("push")
+        # Step 4: Push Be_Happy_GitHub/ contents to gh-pages branch
+        ok, out = git("push", "origin", "gh-pages:gh-pages")
         if not ok:
             raise Exception(f"git push failed: {out[:500]}")
         with _state_lock:
             publish_state["stage"] = "done"
             publish_state["progress"] = 100
-            publish_state["message"] = "Published!"
+            publish_state["message"] = "Published to GitHub Pages!"
     except Exception as e:
         with _state_lock:
             publish_state["stage"] = "error"
